@@ -22,6 +22,14 @@ func MaxInt(a, b int) int {
 	return b
 }
 
+// MinInt returns the minimum between a and b
+func MinInt(a, b int) int {
+	if a >= b {
+		return b
+	}
+	return a
+}
+
 // AbsInt retunrs the absolute value of a
 func AbsInt(a int) int {
 	if a < 0 {
