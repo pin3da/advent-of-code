@@ -14,20 +14,26 @@ func Atoi(s string) int {
 	return ans
 }
 
-// MaxInt returns the maximum between a and b
-func MaxInt(a, b int) int {
-	if a >= b {
-		return a
+// MaxInt returns the maximum element
+func MaxInt(nums ...int) int {
+	ans := nums[0]
+	for _, val := range nums {
+		if ans < val {
+			ans = val
+		}
 	}
-	return b
+	return ans
 }
 
 // MinInt returns the minimum between a and b
-func MinInt(a, b int) int {
-	if a >= b {
-		return b
+func MinInt(nums ...int) int {
+	ans := nums[0]
+	for _, val := range nums {
+		if ans > val {
+			ans = val
+		}
 	}
-	return a
+	return ans
 }
 
 // AbsInt retunrs the absolute value of a
