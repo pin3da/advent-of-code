@@ -41,7 +41,6 @@ func newInstruction(op int) instruction {
 	if opcode == 99 {
 		return instruction{opcode, mode1, mode2, mode3, -1}
 	}
-	len := []int{0, 4, 4, 2, 2, 3, 3, 4, 4}
 	return instruction{opcode, mode1, mode2, mode3, len[opcode]}
 }
 
