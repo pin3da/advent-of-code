@@ -43,3 +43,38 @@ func AbsInt(a int) int {
 	}
 	return a
 }
+
+// Copy ...
+func Copy(a []int) []int {
+	b := make([]int, len(a))
+	copy(b, a)
+	return b
+}
+
+// Reverse ...
+func Reverse(a []int, i int) []int {
+	for j := len(a) - 1; i < j; i++ {
+		a[i], a[j] = a[j], a[i]
+		j--
+	}
+	return a
+}
+
+// NextPermutation ...
+func NextPermutation(a []int) []int {
+	i := len(a) - 1
+	for ; i > 0 && a[i] <= a[i-1]; i-- {
+	}
+	if i == 0 {
+		return a
+	}
+
+	j := len(a) - 1
+	for ; j >= i && a[j] <= a[i-1]; j-- {
+	}
+
+	a[j], a[i-1] = a[i-1], a[j]
+	a = Reverse(a, i)
+	return a
+
+}

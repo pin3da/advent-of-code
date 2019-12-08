@@ -1,6 +1,7 @@
 package utils_test
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/pin3da/advent-of-code/utils"
@@ -37,6 +38,25 @@ func TestMax(t *testing.T) {
 		res := utils.MaxInt(d.in[0], d.in[1])
 		if res != d.expected {
 			t.Errorf("%d is not Max, expecting %d", res, d.expected)
+		}
+	}
+}
+
+func TestNextPermutation(t *testing.T) {
+	type Data struct {
+		in   []int
+		want []int
+	}
+	data := []Data{
+		{[]int{0, 1}, []int{1, 0}},
+		{[]int{0, 1, 2, 3}, []int{0, 1, 3, 2}},
+		{[]int{4, 0, 3, 2, 1}, []int{4, 1, 0, 2, 3}},
+		{[]int{4, 3, 2, 1}, []int{4, 3, 2, 1}},
+	}
+	for _, d := range data {
+		got := utils.NextPermutation(d.in)
+		if !reflect.DeepEqual(got, d.want) {
+			t.Errorf("got %v, want %v", got, d.want)
 		}
 	}
 }
