@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"strings"
+	"sync"
 )
 
 type instruction struct {
@@ -68,8 +69,10 @@ func equals(a, b int) int {
 }
 
 // RunProgram ...
-func RunProgram(memory []int, input, output chan int) {
+func RunProgram(memory []int, input, output chan int, wg *sync.WaitGroup) {
+	defer wg.Done()
 	defer close(output)
+
 	idx := 0
 	for opt := memory[idx]; idx < len(memory); opt = memory[idx] {
 		inst := newInstruction(opt)

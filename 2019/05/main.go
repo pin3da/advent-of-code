@@ -2,25 +2,28 @@ package main
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/pin3da/advent-of-code/utils"
 )
 
-func main() {
+func run(first int) {
 	memory := utils.LoadMemory("./a1.in")
-	input := make(chan int)
-	output := make(chan int)
-	go utils.IntToChan(1, input)
-	go utils.RunProgram(utils.Copy(memory), input, output)
-	fmt.Println("Result part 1: ")
+	input := make(chan int, 10)
+	output := make(chan int, 10)
+	go utils.IntToChan(first, input)
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go utils.RunProgram(utils.Copy(memory), input, output, &wg)
+	wg.Wait()
+
 	for v := range output {
 		fmt.Println(v)
 	}
-	output = make(chan int)
-	go utils.IntToChan(5, input)
-	go utils.RunProgram(utils.Copy(memory), input, output)
-	fmt.Println("Result part 2: ")
-	for v := range output {
-		fmt.Println(v)
-	}
+}
+
+func main() {
+	run(1)
+	run(5)
 }
