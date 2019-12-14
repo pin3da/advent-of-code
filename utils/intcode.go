@@ -68,7 +68,8 @@ func equals(a, b int) int {
 }
 
 // RunProgram ...
-func RunProgram(memory, input []int) (output []int) {
+func RunProgram(memory []int, input, output chan int) {
+	defer close(output)
 	idx := 0
 	for opt := memory[idx]; idx < len(memory); opt = memory[idx] {
 		inst := newInstruction(opt)
@@ -79,16 +80,10 @@ func RunProgram(memory, input []int) (output []int) {
 			applyFn(memory, idx, inst, mult)
 		case 3:
 			storePos := getVal(memory, idx+1, inst.mode1)
-			if len(input) > 0 {
-				memory[storePos] = input[0]
-				input = input[1:]
-			} else {
-				fmt.Println("insert number:")
-				fmt.Scan(&memory[storePos])
-			}
+			memory[storePos] = <-input
 		case 4:
 			val := getVal(memory, memory[idx+1], inst.mode1)
-			output = append(output, val)
+			output <- val
 		case 5:
 			val := getVal(memory, memory[idx+1], inst.mode1)
 			if val != 0 {
@@ -106,14 +101,14 @@ func RunProgram(memory, input []int) (output []int) {
 		case 8:
 			applyFn(memory, idx, inst, equals)
 		case 99:
-			return output
+			return
 		default:
 			fmt.Println(idx, inst)
 			panic("instruction not recognized")
 		}
 		idx += inst.len
 	}
-	return []int{}
+	panic("out of memory")
 }
 
 // LoadMemory ...

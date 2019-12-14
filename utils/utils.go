@@ -76,5 +76,16 @@ func NextPermutation(a []int) []int {
 	a[j], a[i-1] = a[i-1], a[j]
 	a = Reverse(a, i)
 	return a
+}
 
+// IntToChan is a gorutine that adds a single int to a channel
+func IntToChan(val int, c chan int) {
+	c <- val
+}
+
+// IntArrToChan is a gorutine that adds several ints to a channel
+func IntArrToChan(arr []int, c chan int) {
+	for _, v := range arr {
+		c <- v
+	}
 }

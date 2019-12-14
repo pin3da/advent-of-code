@@ -8,6 +8,19 @@ import (
 
 func main() {
 	memory := utils.LoadMemory("./a1.in")
-	fmt.Println(utils.RunProgram(utils.Copy(memory), []int{1}))
-	fmt.Println(utils.RunProgram(utils.Copy(memory), []int{5}))
+	input := make(chan int)
+	output := make(chan int)
+	go utils.IntToChan(1, input)
+	go utils.RunProgram(utils.Copy(memory), input, output)
+	fmt.Println("Result part 1: ")
+	for v := range output {
+		fmt.Println(v)
+	}
+	output = make(chan int)
+	go utils.IntToChan(5, input)
+	go utils.RunProgram(utils.Copy(memory), input, output)
+	fmt.Println("Result part 2: ")
+	for v := range output {
+		fmt.Println(v)
+	}
 }
