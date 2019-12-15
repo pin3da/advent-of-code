@@ -15,14 +15,10 @@ func main() {
 	}
 	in := make(utils.PChan, 100)
 	out := make(utils.PChan, 100)
+	// go utils.IntToChan(1, in)
+	go utils.IntToChan(2, in)
 	wg := new(sync.WaitGroup)
 	wg.Add(2)
-	go func() {
-		tmp := int64(1)
-		fmt.Println("Input", tmp)
-		in <- tmp
-	}()
-
 	go utils.RunProgram(memory, in, out, wg)
 	go func() {
 		defer wg.Done()
