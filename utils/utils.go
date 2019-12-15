@@ -64,6 +64,18 @@ func AbsInt(a int) int {
 	return a
 }
 
+// GCD computes the greatest common divisor of a and b
+func GCD(a, b int) int {
+	a = AbsInt(a)
+	b = AbsInt(b)
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
 // Copy ...
 func Copy(a []int) []int {
 	b := make([]int, len(a))
