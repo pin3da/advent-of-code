@@ -9,19 +9,19 @@ import (
 
 func part1() {
 	memory := utils.LoadMemory("./a3.in")
-	phase := []int{0, 1, 2, 3, 4}
-	best := 0
+	phase := []int64{0, 1, 2, 3, 4}
+	best := int64(0)
 	for it := 0; it < 120; it++ {
-		input := make(chan int)
-		last := 0
+		input := make(utils.PChan)
+		last := int64(0)
 		wg := new(sync.WaitGroup)
 		wg.Add(5)
 		for _, ph := range phase {
-			output := make(chan int)
-			go utils.IntArrToChan([]int{ph, last}, input)
-			go utils.RunProgram(utils.Copy(memory), input, output, wg)
+			output := make(utils.PChan)
+			go utils.IntArrToChan([]int64{ph, last}, input)
+			go utils.RunProgram(utils.Copy64(memory), input, output, wg)
 			last = <-output
-			best = utils.MaxInt(best, last)
+			best = utils.MaxInt64(best, last)
 		}
 		wg.Wait()
 		phase = utils.NextPermutation(phase)
@@ -31,12 +31,12 @@ func part1() {
 
 func part2() {
 	memory := utils.LoadMemory("./a3.in")
-	phase := []int{5, 6, 7, 8, 9}
-	best := 0
+	phase := []int64{5, 6, 7, 8, 9}
+	best := int64(0)
 	for it := 0; it < 120; it++ {
-		bus := make([]chan int, 5)
+		bus := make([]utils.PChan, 5)
 		for i := 0; i < 5; i++ {
-			bus[i] = make(chan int, 2)
+			bus[i] = make(utils.PChan, 2)
 		}
 		go func() {
 			for i := 0; i < 5; i++ {
@@ -48,7 +48,7 @@ func part2() {
 		wg := new(sync.WaitGroup)
 		for i := 0; i < 5; i++ {
 			wg.Add(1)
-			tmp := utils.Copy(memory)
+			tmp := utils.Copy64(memory)
 			go utils.RunProgram(tmp, bus[i], bus[(i+1)%5], wg)
 		}
 		wg.Wait()
