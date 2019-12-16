@@ -148,3 +148,12 @@ func LoadMemory(filename string) []int64 {
 	}
 	return ans
 }
+
+// LoadExtendedMemory ...
+func LoadExtendedMemory(filename string) []int64 {
+	ans := LoadMemory(filename)
+	for i := 0; i < 1000000; i++ {
+		ans = append(ans, 0)
+	}
+	return ans
+}
