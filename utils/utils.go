@@ -64,6 +64,22 @@ func AbsInt(a int) int {
 	return a
 }
 
+// AbsFloat64 retunrs the absolute value of a
+func AbsFloat64(a float64) float64 {
+	if a < 0 {
+		return -a
+	}
+	return a
+}
+
+// AbsInt64 retunrs the absolute value of a
+func AbsInt64(a int64) int64 {
+	if a < 0 {
+		return -a
+	}
+	return a
+}
+
 // GCD computes the greatest common divisor of a and b
 func GCD(a, b int) int {
 	a = AbsInt(a)
@@ -74,6 +90,23 @@ func GCD(a, b int) int {
 		a = t
 	}
 	return a
+}
+
+// GCD64 computes the greatest common divisor of a and b
+func GCD64(a, b int64) int64 {
+	a = AbsInt64(a)
+	b = AbsInt64(b)
+	for b != 0 {
+		t := b
+		b = a % b
+		a = t
+	}
+	return a
+}
+
+// LCM64 ...
+func LCM64(a, b int64) int64 {
+	return a * b / GCD64(a, b)
 }
 
 // Copy ...
@@ -127,4 +160,15 @@ func IntArrToChan(arr []int64, c chan int64) {
 	for _, v := range arr {
 		c <- v
 	}
+}
+
+// Sign ...
+func Sign(f int64) int64 {
+	if f < 0 {
+		return -1
+	}
+	if f > 0 {
+		return 1
+	}
+	return 0
 }
