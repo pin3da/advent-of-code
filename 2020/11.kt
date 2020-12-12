@@ -1,5 +1,4 @@
 import java.io.File
-import kotlin.reflect.jvm.internal.impl.utils.DFS
 
 fun main() {
   var seats = File("data/11.in").readLines().map { it.toCharArray() }.toTypedArray()
