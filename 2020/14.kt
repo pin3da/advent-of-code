@@ -1,7 +1,9 @@
 import java.io.File
 import java.util.BitSet
 
-class Entry(val mask: CharArray?, val addr: Long?, val value: Long?)
+sealed class Entry
+data class Mask(val mask: CharArray) : Entry()
+data class Mem(val addr: Long, val value: Long) : Entry()
 
 fun main() {
   val addRegex = "mem\\[(\\d+)]".toRegex()
@@ -11,11 +13,11 @@ fun main() {
     }
     .map {
       when (it[0]) {
-        "mask" -> Entry(it[1].toCharArray(), null, null)
+        "mask" -> Mask(it[1].toCharArray())
         else -> {
           val (addr) = addRegex.find(it[0])!!.destructured
           val value = it[1].toLong()
-          Entry(null, addr.toLong(), value)
+          Mem(addr.toLong(), value)
         }
       }
     }
@@ -27,10 +29,9 @@ private fun part1(entries: List<Entry>) {
   var mask = CharArray(36)
   var memory = mutableMapOf<Long, Long>()
   for (entry in entries) {
-    if (entry.mask != null) {
-      mask = entry.mask
-    } else {
-      memory[entry.addr!!] = applyMask(entry.value!!, mask)
+    when (entry) {
+      is Mask -> mask = entry.mask
+      is Mem -> memory[entry.addr] = applyMask(entry.value, mask)
     }
   }
   println("Part 1 ${memory.values.sum()}")
@@ -40,20 +41,24 @@ private fun part2(entries: List<Entry>) {
   var mask = CharArray(36)
   var memory = mutableMapOf<Long, Long>()
   for (entry in entries) {
-    if (entry.mask != null) {
-      mask = entry.mask
-      continue
-    }
-    var addr = mask.copyOf()
-    val tmp = BitSet.valueOf(longArrayOf(entry.addr!!.toLong()))
-    for (i in mask.indices) {
-      if (mask[i] != '0') continue
-      addr[i] = if (tmp.get(35 - i)) '1' else '0'
-    }
-    var all = mutableListOf<Long>()
-    genAllAddr(addr, 0, 0L, all)
-    for (a in all) {
-      memory[a] = entry.value!!
+    when (entry) {
+      is Mask -> {
+        mask = entry.mask
+        continue
+      }
+      is Mem -> {
+        var addr = mask.copyOf()
+        val tmp = BitSet.valueOf(longArrayOf(entry.addr))
+        for (i in mask.indices) {
+          if (mask[i] != '0') continue
+          addr[i] = if (tmp.get(35 - i)) '1' else '0'
+        }
+        var all = mutableListOf<Long>()
+        genAllAddr(addr, 0, 0L, all)
+        for (a in all) {
+          memory[a] = entry.value
+        }
+      }
     }
   }
   println("Part 2 ${memory.values.sum()}")
@@ -77,8 +82,8 @@ fun applyMask(value: Long, mask: CharArray): Long {
   val ans = BitSet.valueOf(longArrayOf(value))
   for ((i, c) in mask.withIndex()) {
     if (c != 'X') {
-      ans.set((36 - i), c == '1')
+      ans.set((35 - i), c == '1')
     }
   }
-  return ans.toLongArray()[1]
+  return ans.toLongArray()[0]
 }
