@@ -12,7 +12,7 @@ fun main() {
   }.count()
   println("Part 1: $ans1")
 
-  // Part 2: The recursive letters form strings of the way {42}^n{42}^m{31}^m, s.t n > 0, m > 0.
+  // Part 2: The recursive grammar allows to parse strings of the way {42}^n{42}^m{31}^m, s.t n > 0, m > 0.
   // Rules 42 and 31 parse a finite set of strings, so each line can be parsed greedily and check that the number of
   // matches of 42 is > than the number of matches of 31.
   // Alternative for problem 1: matches {42}{42}{31}
