@@ -13,3 +13,7 @@
 
 # Sample inputs
 *.in
+
+# Rust
+**/target/**
+*.pdb
