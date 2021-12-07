@@ -16,7 +16,6 @@ fn solve(input: &Vec<i32>) {
     let mut crabs = input.clone();
     crabs.sort();
     part1(&crabs);
-    // println!("{:?}", crabs);
     part2(&crabs);
 }
 
