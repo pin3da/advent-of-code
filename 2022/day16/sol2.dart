@@ -1,8 +1,6 @@
 import 'dart:io';
-import 'dart:convert';
 import 'dart:collection';
 import 'dart:math';
-import '../pos.dart';
 
 Future<List<String>> readLines(String filename) async {
   String contents = await File(filename).readAsString();
@@ -17,6 +15,7 @@ class Node {
 
   String toString() => "$id, $rate, $adj";
 }
+
 class Key {
   String node;
   Set<String> opened;
@@ -25,8 +24,11 @@ class Key {
 
   bool operator ==(Object o) {
     Key other = o as Key;
-    return (node == other.node) && (opened == other.opened) && (time == other.time);
+    return (node == other.node) &&
+        (opened == other.opened) &&
+        (time == other.time);
   }
+
   int get hashCode {
     return Object.hash(node, opened.toString(), time);
   }
@@ -40,7 +42,8 @@ void main(List<String> args) async {
     List<String> tokens = line.split(' ');
     String from = tokens[1];
     int rate = int.parse(tokens[4].replaceAll(';', '').replaceAll('rate=', ''));
-    List<String> to = tokens.sublist(9).map((it) => it.replaceAll(',', '')).toList();
+    List<String> to =
+        tokens.sublist(9).map((it) => it.replaceAll(',', '')).toList();
     graph[from] = Node(from, rate, to);
     if (rate > 0) valves.add(from);
   }
@@ -71,18 +74,16 @@ void main(List<String> args) async {
   }
 
   Map<Key, int> memo = HashMap();
-  
-  int limit = 26;
-  // valve at `node` is already opened. 
-  int dp(String node, Set<String> opened, Set<String> can_open, int time) { 
-    if (time > limit) return -123456789;
-    if (time == limit) return  presure(opened);
 
-  
+  int limit = 26;
+  // valve at `node` is already opened.
+  int dp(String node, Set<String> opened, Set<String> can_open, int time) {
+    if (time > limit) return -123456789;
+    if (time == limit) return presure(opened);
 
     Key key = Key(node, opened, time);
     if (memo.containsKey(key)) return memo[key]!;
-    
+
     if (can_open == opened) {
       memo[key] = presure(opened) * (limit - time);
       return memo[key]!;
@@ -103,20 +104,21 @@ void main(List<String> args) async {
     return best;
   }
 
-
   int ans = 0;
-  for (int mask = 0; mask < (1 <<(valves.length)) / 2; mask++) {
+  for (int mask = 0; mask < (1 << (valves.length)) / 2; mask++) {
     Set<String> first = HashSet();
     Set<String> second = HashSet();
     for (int j = 0; j < valves.length; j++) {
-      if (((mask >> j) & 1) > 0) first.add(valves[j]);
-      else second.add(valves[j]);
+      if (((mask >> j) & 1) > 0)
+        first.add(valves[j]);
+      else
+        second.add(valves[j]);
     }
     memo = HashMap();
     int dp_first = dp('AA', HashSet(), first, 1);
     memo = HashMap();
     int dp_second = dp('AA', HashSet(), second, 1);
-    ans = max(ans, dp_first + dp_second); 
+    ans = max(ans, dp_first + dp_second);
   }
 
   print(ans);
