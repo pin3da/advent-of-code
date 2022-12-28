@@ -147,7 +147,10 @@ void main(List<String> args) async {
   List<int> z = zFunction(diffs.reversed.toList());
   int len_cycle = 0;
   for (int i = 0; i < z.length; i++) {
-    if (z[i] > i) len_cycle = i;
+    if (z[i] > i) {
+      len_cycle = i;
+      if (len_cycle % (rocks.length * pattern.length) == 0) break;
+    }
   }
 
   int len_prefix = diffs.length % (len_cycle);
