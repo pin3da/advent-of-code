@@ -13,6 +13,10 @@
 
 # Sample inputs
 *.in
+*example.txt
+
+# Test data
+*input*.txt
 
 # Rust
 **/target/**
