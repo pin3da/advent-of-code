@@ -13,7 +13,7 @@
 
 # Sample inputs
 *.in
-*example.txt
+*example*.txt
 
 # Test data
 *input*.txt
