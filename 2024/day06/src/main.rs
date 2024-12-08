@@ -92,18 +92,28 @@ fn solve_part_1(guard: Position, rows: usize, cols: usize, obstacles: &HashSet<P
 
 fn solve_part_2(guard: Position, rows: usize, cols: usize, obstacles: &HashSet<Position>) -> usize {
 
-    let mut num_cycles = 0;
+    let mut handles = vec![];
     for r in 0..rows {
         for c in 0..cols {
             let pos = Position::new(r as i32, c as i32);
             if obstacles.contains(&pos) {
                 continue;
             }
-            let mut new_obstacles = obstacles.clone();
-            new_obstacles.insert(pos);
-            if find_cycle(guard, rows, cols, &new_obstacles) {
-                num_cycles += 1;
-            }
+            let obstacles = obstacles.clone();
+            let guard = guard;
+            let handle = std::thread::spawn(move || {
+                let mut new_obstacles = obstacles;
+                new_obstacles.insert(pos);
+                find_cycle(guard, rows, cols, &new_obstacles)
+            });
+            handles.push(handle);
+        }
+    }
+
+    let mut num_cycles = 0;
+    for handle in handles {
+        if handle.join().unwrap() {
+            num_cycles += 1;
         }
     }
 
