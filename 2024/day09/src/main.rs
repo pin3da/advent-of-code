@@ -109,20 +109,11 @@ fn part1(disk: Vec<Block>) {
 }
 
 fn checksum(disk: &Vec<Block>) -> i64 {
-    for (cur, next) in disk.iter().zip(disk.iter().skip(1)) {
-        assert!(cur.end == next.start);
-    }
-    let mut checksum: i64 = 0;
-    for block in disk {
-        if block.id == -1 {
-            continue;
-        }
-        for i in block.start..block.end {
-            checksum += (block.id as i64) * (i as i64);
-        }
-    }
-    println!();
-    checksum
+    assert!(disk.iter().zip(disk.iter().skip(1)).all(|(cur, next)| cur.end == next.start));
+    disk.iter()
+        .filter(|block| block.id != -1)
+        .flat_map(|block| (block.start..block.end).map(|i| (block.id as i64) * (i as i64)))
+        .sum()
 }
 
 // This would also work for part 1 if all the blocks are splitted into 1-length blocks.
