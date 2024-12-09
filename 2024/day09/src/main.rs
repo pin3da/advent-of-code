@@ -65,6 +65,7 @@ fn main() {
     }
 
     part1(disk.clone());
+    part2(disk.clone());
 }
 
 fn part1(disk: Vec<Block>) {
@@ -101,18 +102,68 @@ fn part1(disk: Vec<Block>) {
         }
     }
     if start == end && disk[start].len() > 0 {
-        println!("Adding last block {:?}", disk[start]);
         sorted_disk.push(disk[start]);
     }
-    for (cur, next) in sorted_disk.iter().zip(sorted_disk.iter().skip(1)) {
+
+    println!("Part 1: {}", checksum(&sorted_disk));
+}
+
+fn checksum(disk: &Vec<Block>) -> i64 {
+    for (cur, next) in disk.iter().zip(disk.iter().skip(1)) {
         assert!(cur.end == next.start);
     }
-
-    let mut checksum : i64 = 0;
-    for block in sorted_disk {
+    let mut checksum: i64 = 0;
+    for block in disk {
+        if block.id == -1 {
+            continue;
+        }
         for i in block.start..block.end {
             checksum += (block.id as i64) * (i as i64);
         }
     }
-    println!("Part 1: {}", checksum);
+    println!();
+    checksum
+}
+
+// This would also work for part 1 if all the blocks are splitted into 1-length blocks.
+fn part2(disk: Vec<Block>) {
+    let mut disk = disk;
+    let mut end_it = disk.len() - 1;
+
+    while end_it > 0 {
+        // skip empty blocks
+        if disk[end_it].can_store() {
+            end_it -= 1;
+            continue;
+        }
+        let mut found = false;
+        for start in 0..end_it {
+            if disk[start].can_store() && disk[start].free_space() >= disk[end_it].len() {
+                let prev_end = disk[start].end;
+                let new_end = disk[start].start + disk[end_it].len();
+                disk[start].id = disk[end_it].id;
+                disk[start].end = new_end;
+                disk[end_it].id = -1;
+                if new_end < prev_end {
+                    disk.insert(
+                        start + 1,
+                        Block {
+                            start: new_end,
+                            end: prev_end,
+                            id: -1,
+                            used: 0,
+                        },
+                    );
+                    // shifted all by 1
+                    end_it += 1;
+                }
+                found = true;
+                break;
+            }
+        }
+        if !found {
+            end_it -= 1;
+        }
+    }
+    println!("Part 2: {}", checksum(&disk));
 }
