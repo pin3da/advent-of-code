@@ -1,0 +1,37 @@
+registers:
+A 46187030
+B 0
+C 0
+
+2,4 -> B = A & 7
+1,5 -> B = B ^ 5
+7,5 -> C = A >> B 
+0,3 -> A = A >> 3
+4,0 -> B = B ^ C
+1,6 -> B = B ^ 6
+5,5 -> print(B & 7) 
+3,0 -> if A != 0 { jump to 0}
+
+do {
+  B = A & 7
+  B = B ^ 5          // B ^ 0b101
+  C = A >> B         // drop B bits
+  A = A >> 3         // drop 3 bits
+  B = B ^ C
+  B = B ^ 6          // B ^ 0b110
+  print (B & 7)
+} while (A != 0)
+
+
+do {
+  B = (A & 7) ^ 5   // Only depends on A
+  C = A >> (A ^ 5)  // C drops (A ^ 5) bits
+  A = A >> 3;       // forget 3 bits in A
+  B = B ^ (C)
+  B = B ^ 6
+  Print (B & 7) // 3 bits in B
+} while (a != 0)
+
+
+a = 0
+b = ()
