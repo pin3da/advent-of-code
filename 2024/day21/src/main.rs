@@ -100,15 +100,18 @@ fn get_all_shortest_paths(code: &str, keypad: &Grid) -> Vec<Vec<char>> {
 
 fn dir_len(from: (usize, usize), to: (usize, usize)) -> usize {
     let paths = all_paths(from, to, &DIR_PAD);
-    paths.iter().all(|path| path.len() == paths[0].len());
-
+    assert!(paths.iter().all(|path| path.len() == paths[0].len()), "All paths must be the same length");
     paths[0].len()
 }
 
 fn solve_dirs(code: &Vec<char>, layers: usize) -> usize {
     let mut memo: HashMap<(Vec<char>, usize), usize> = HashMap::new();
-    
-    fn internal(code: &Vec<char>, layers: usize, memo: &mut HashMap<(Vec<char>, usize), usize>) -> usize {
+
+    fn internal(
+        code: &Vec<char>,
+        layers: usize,
+        memo: &mut HashMap<(Vec<char>, usize), usize>,
+    ) -> usize {
         let key = (code.clone(), layers);
         if let Some(&ans) = memo.get(&key) {
             return ans;
@@ -118,25 +121,18 @@ fn solve_dirs(code: &Vec<char>, layers: usize) -> usize {
         let mut cur = 'A';
         if layers == 1 {
             for c in code.iter() {
-                let from = find_pos(cur, &DIR_PAD);
-                let to = find_pos(*c, &DIR_PAD);
-                ans += dir_len(from, to);
+                ans += dir_len(find_pos(cur, &DIR_PAD), find_pos(*c, &DIR_PAD));
                 cur = *c;
             }
             memo.insert(key, ans);
             return ans;
         }
         for &c in code.iter() {
-            let from = find_pos(cur, &DIR_PAD);
-            let to = find_pos(c, &DIR_PAD);
-            let all_paths = all_paths(from, to, &DIR_PAD);
-            let mut min_len = usize::MAX;
-            for path in all_paths {
-                let len = internal(&path, layers - 1, memo);
-                if len < min_len {
-                    min_len = len;
-                }
-            }
+            let min_len = all_paths(find_pos(cur, &DIR_PAD), find_pos(c, &DIR_PAD), &DIR_PAD)
+                .iter()
+                .map(|path| internal(&path, layers - 1, memo))
+                .min()
+                .unwrap();
             ans += min_len;
             cur = c;
         }
@@ -153,13 +149,7 @@ fn main() {
     let mut ans = 0;
     for code in input.lines() {
         let paths = get_all_shortest_paths(code, &NUM_PAD);
-        let mut min_len = usize::MAX;
-        for path in paths {
-            let len = solve_dirs(&path, 25);
-            if len < min_len {
-                min_len = len;
-            }
-        }
+        let min_len = paths.iter().map(|path| solve_dirs(path, 25)).min().unwrap();
         ans += min_len * code[..code.len() - 1].parse::<usize>().unwrap();
     }
     println!("{}", ans);
