@@ -5,3 +5,13 @@ edition = "2024"
 
 [dependencies]
 input_parsing = { path = "../input_parsing" }
+petgraph = "0.6"
+itertools = "0.12"
+
+[[bin]]
+name = "plot"
+path = "src/plot.rs"
+
+[[bin]]
+name = "main"
+path = "src/main.rs"

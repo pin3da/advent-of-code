@@ -94,4 +94,12 @@ fn main() {
 
     // 412579686 -> Too low. Was due to integer overflow.
     println!("part1: {}", part1);
+
+    // I renedered the graph (plot.rs) and found the candidates visually.
+    let mut candidates = vec!["rts", "z07", "z26", "kgj", "chv", "vvw", "z12", "jpj"];
+    candidates.sort();
+
+    let candidates_str = candidates.join(",");
+    println!("Part 2: {}", candidates_str);
+
 }
