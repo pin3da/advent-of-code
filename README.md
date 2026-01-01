@@ -14,3 +14,4 @@ I have little experience in the languages here, so don't expect super nice code 
 |2022|dart||
 |2023|C++|I intended to solve 2023 offline, and C++ is probably the only thing I can get to compile without querying the internet. Unfortunately, I didn't download all the problem statements.|
 |2024|rust again||
+|2025|Ruby|I used Ruby around 2014 and I don't remember much about it, but wanted to re-learn it.|
