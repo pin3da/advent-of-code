@@ -1,22 +1,14 @@
 MOD = 100
 
-def parse(io = STDIN)
-  data = []
-  STDIN.each_line do |line|
+def parse(io = $stdin)
+  io.each_line.filter_map do |line|
     line = line.strip
     next if line.empty?
-
-    data << line[1..].to_i * (line[0] == "L" ? -1 : 1)
+    line[1..].to_i * (line[0] == "L" ? -1 : 1)
   end
-  data
-end
-
-def sing(n)
-  n <=> 0
 end
 
 data = parse
-
 pos = 50
 part1 = 0
 part2 = 0
@@ -27,7 +19,7 @@ data.each do |d|
   part1 += 1 if pos == 0
 
   part2 += d.abs / 100
-  part2 += 1 if sing(d) == sing(prev - pos)
+  part2 += 1 if (d <=> 0) == (prev <=> pos)
 
 end
 
