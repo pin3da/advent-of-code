@@ -9,7 +9,7 @@ def positions_to_remove(grid)
   end
 end
 
-grid = Grid.from_io
+grid = Grid.from_io($stdin) { |line| line.strip.chars }
 removals = positions_to_remove(grid)
 puts "Part 1: #{removals.size}"
 

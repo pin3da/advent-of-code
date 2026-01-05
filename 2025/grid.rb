@@ -1,15 +1,16 @@
 class Grid
   attr_reader :width, :height
 
-  def initialize(lines)
-    @data = lines.map { |line| line.strip.chars }
+  def initialize(lines, &parse_line)
+    parse_line ||= ->(line) { line.strip.chars }
+    @data = lines.map(&parse_line)
     @height = @data.size
     @width = @data.first&.size || 0
   end
 
-  def self.from_io(io = $stdin)
+  def self.from_io(io = $stdin, &parse_line)
     lines = io.each_line.reject { |line| line.strip.empty? }
-    new(lines)
+    new(lines, &parse_line)
   end
 
   def valid?(row, col)
