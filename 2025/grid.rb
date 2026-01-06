@@ -1,5 +1,5 @@
 class Grid
-  attr_reader :width, :height
+  attr_reader :width, :height, :data
 
   def initialize(lines, &parse_line)
     parse_line ||= ->(line) { line.strip.chars }
@@ -11,6 +11,15 @@ class Grid
   def self.from_io(io = $stdin, &parse_line)
     lines = io.each_line.reject { |line| line.strip.empty? }
     new(lines, &parse_line)
+  end
+
+  def self.fill(height, width, value = 0)
+    data = Array.new(height) { Array.new(width, value) }
+    grid = allocate
+    grid.instance_variable_set(:@data, data)
+    grid.instance_variable_set(:@height, height)
+    grid.instance_variable_set(:@width, width)
+    grid
   end
 
   def valid?(row, col)
@@ -46,5 +55,9 @@ class Grid
       [nr, nc, self[nr, nc]] if valid?(nr, nc)
       end
     end
+  end
+
+  def to_s
+    @data.map { |row| row.join(" ") }.join("\n")
   end
 end
