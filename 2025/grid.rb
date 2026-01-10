@@ -60,4 +60,10 @@ class Grid
   def to_s
     @data.map { |row| row.join(" ") }.join("\n")
   end
+
+  def dup
+    copy = Grid.fill(height, width)
+    each { |r, c, v| copy[r, c] = v }
+    copy
+  end
 end
